@@ -6,12 +6,36 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 const warroom = require("./warroom-client");
 
+require('dotenv').load();
+
+var db = require('monk')(process.env.DB_URI);
+var times = db.get('times');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
 
 app.io = require('socket.io')();
+
+function updateDB(data) {
+	return db.get('times').insert({ id: data.id, responseTime: data.responseTime });
+}
+
+function getAverage(data) {
+	return new Promise(function(resolve, reject){
+		db.get('times').find({ id: data.id }, { limit: 100, sort: {_id: -1} })
+		.success(function(results) {
+			var average = 0;
+			for (var i in results) {
+				average += results[i].responseTime;
+			}
+			data.average = average / 100;
+			resolve(data);
+		});
+	});
+}
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,9 +54,20 @@ app.use('/users', users);
 
 app.io.on('connection', function (socket) {
 	warroom(function(error, data) {
-		console.log(data);
-		socket.emit("status", {
-			body: data,
+		dataToSend = data.data.map(function(server){
+			return new Promise (function(resolve, reject) {
+				updateDB(server)
+				.success(function() {
+					resolve(getAverage(server));
+				});
+			});
+		});
+		Promise.all(dataToSend).then(function(servers) {
+			socket.emit("status", {
+				body: {data: servers},
+			});
+		}).catch(function(err) {
+			console.log(err);
 		});
 	});
 });

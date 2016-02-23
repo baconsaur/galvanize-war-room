@@ -1,6 +1,7 @@
 <h2>{{server.name}}</h2>
-<ul>
+<ul class="detail">
   <li ng-class="{good: server.responseTime < 0.05, warning: server.responseTime >= 0.05, critical: server.responseTime > 0.5}">Response time: {{server.responseTime | milliseconds}}</li>
+  <p>Average response time: {{server.average | milliseconds}}</p>
   <li>Temperature: {{server.temp | temperature}}</li>
   <li>CPU: {{server.cpu}}</li>
   <li>Memory: {{server.memory}}</li>

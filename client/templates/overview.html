@@ -1,6 +1,7 @@
-<ul>
+<ul class="overview">
   <li ng-repeat="server in servers" ui-sref="details({id: $index})">
     <h2>{{server.name}}</h2>
+    <p>Average response time: {{server.average | milliseconds}}</p>
     <p ng-class="{good: server.responseTime < 0.05, warning: server.responseTime >= 0.05, critical: server.responseTime > 0.5}">{{server.responseTime | milliseconds}}</p>
   </li>
 </ul>

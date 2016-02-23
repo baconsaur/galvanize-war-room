@@ -6,6 +6,8 @@ angular.module('warRoom')
   })
   .filter('temperature', function() {
     return function(input) {
-      return input.replace('C', '°C');
+      if(input) {
+        return input.replace('C', '°C');
+      }
     };
   });
