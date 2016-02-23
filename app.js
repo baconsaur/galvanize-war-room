@@ -8,7 +8,7 @@ const warroom = require("./warroom-client");
 
 require('dotenv').load();
 
-var db = require('monk')(process.env.DB_URI);
+var db = require('monk')(process.env.MONGOLAB_URI);
 var times = db.get('times');
 
 var routes = require('./routes/index');
