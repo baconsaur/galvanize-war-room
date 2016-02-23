@@ -5,5 +5,9 @@ angular.module('warRoom', ['ui.router'])
         templateUrl: 'templates/overview.html',
         controller: 'OverviewController',
         url: '/'
+      }).state('details', {
+        templateUrl: 'templates/details.html',
+        controller: 'DetailsController',
+        url: '/details/:id'
       });
     });
