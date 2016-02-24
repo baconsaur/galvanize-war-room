@@ -9,5 +9,9 @@ angular.module('warRoom', ['ui.router'])
         templateUrl: 'templates/details.html',
         controller: 'DetailsController',
         url: '/details/:id'
+      }).state('settings', {
+        templateUrl: 'templates/settings.html',
+        controller: 'SettingsController',
+        url: '/settings'
       });
     });
